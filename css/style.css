@@ -5,14 +5,15 @@
 }
 
 body {
-  background: #333;
-  color: #222;
+  background: rgb(51, 51, 51);
+  color: rgb(51, 51, 51);
   overflow-x: hidden;
-  margin: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: bold;
 }
 
 .container {
-  background: #fafafa;
+  background: rgb(255, 255, 255);
   transform-origin: top left;
   transition: transform 0.5s linear;
   width: 100vw;
@@ -31,12 +32,18 @@ body {
 }
 
 .circle {
-  background: #ff7979;
+  background-color: #c55b5b;
   height: 200px;
   width: 200px;
   border-radius: 50%;
   position: relative;
   transition: transform 0.5s linear;
+  transition: background-color 0.5s linear;
+}
+
+.color {
+  transition: background-color 1s linear;
+  background-color: #17afa1;
 }
 
 .container.show-nav .circle {
@@ -73,7 +80,7 @@ body {
 
 nav {
   position: relative;
-  bottom: 278px;
+  bottom: 621px;
   left: 0;
   z-index: 100;
 }
@@ -82,49 +89,38 @@ nav ul {
   display: flex;
   flex-direction: column;
   list-style-type: none;
-  padding-left: 25px;
+  padding-left: 12px;
 }
 nav ul li {
   text-transform: uppercase;
   color: #fff;
   margin: 14px 0;
   transform: translateX(-100%);
-  transition: transform 0.7s ease-in;
+  transition: transform 0.6s ease-in;
 }
 
 nav ul li i {
   font-size: 20px;
   margin-right: 10px;
+  transition: transform 0.6s ease;
 }
 
 nav ul li + li {
   margin-left: 15px;
   transform: translateX(-150%);
+  transition: transform 0.7s ease;
 }
 nav ul li + li + li {
   margin-left: 30px;
   transform: translateX(-200%);
+  transition: transform 0.8s ease;
 }
 
 .content img {
   max-width: 50vw;
 }
 
-/* .content {
+.content {
   max-width: 1000px;
   margin: 50px auto;
-} */
-
-.content h1 {
-  margin: 0;
-}
-
-.content small {
-  color: #555;
-  font-style: italic;
-}
-
-.content p {
-  color: #333;
-  line-height: 1.5;
 }
