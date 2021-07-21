@@ -18,71 +18,46 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./css/style.css" />
-    <title>Menu by Rotaion</title>
+    <title>Hours per Project Calculator</title>
   </head>
   <body>
-    <main class="container">
-      <section class="circle-container">
-        <article class="circle">
-          <button id="close"><i class="fas fa-times"></i></button>
-          <button id="open"><i class="fas fa-bars"></i></button>
+    <main>
+      <header><h1>Hours per Project</h1></header>
+      <section id="top-section">
+        <p>
+          Enter the start hour <span>(From)</span> and end hour
+          <span>(until)</span> in this format: 10:30 or 10.30
+        </p>
+        <article class="input">
+          <input type="text" placeholder="From" id="from-0" />
+          <input type="text" placeholder="Until" id="until-0" />
+          <input type="text" placeholder="Project name" id="project-name-0" />
         </article>
+        <div id="more-input"></div>
+        <article id="add-row">
+          <button id="add-btn">+</button>
+        </article>
+        <article id="calc"><button id="calc-btn">Calculete</button></article>
       </section>
-      <section class="content">
-        <h1>Amazing Cakes</h1>
-
-        <small
-          >by <strong><em>John Doe</em> </strong>
-        </small>
-        <br /><br />
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet unde
-          officia natus repudiandae nihil neque error quasi ad architecto,
-          aliquam debitis ipsa. Quisquam suscipit, enim dolore placeat quam vel
-          reprehenderit velit laboriosam nihil eius numquam dignissimos ipsum
-          atque corporis, aperiam mollitia. Tenetur quisquam, corporis facilis
-          laborum deleniti eos atque maiores!
-        </p>
-        <br />
-
-        <h3>Chocolate Cake</h3>
-
-        <img
-          src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1880&q=80"
-          alt="Chocolate Cake"
-        />
-        <br /><br />
-        <h4>Recipe</h4>
-
-        <ul>
-          <li>Lorem ipsum dolor sit amet consectetur adipisicing.</li>
-          <li>Lorem ipsum dolor sit amet.</li>
-          <li>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo
-            voluptate voluptates quaerat quam sunt possimus.
-          </li>
-          <li>Lorem ipsum dolor sit amet consectetur.</li>
-        </ul>
-        <br />
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet unde
-          officia natus repudiandae nihil neque error quasi ad architecto,
-          aliquam debitis ipsa. Quisquam suscipit, enim dolore placeat quam vel
-          reprehenderit velit laboriosam nihil eius numquam dignissimos ipsum
-          atque corporis, aperiam mollitia. Tenetur quisquam, corporis facilis
-          laborum deleniti eos atque maiores!
-        </p>
+      <section id="output">
+        <!-- <h1>Summary of hours</h1>
+        <table>
+          <tr>
+            <th>hours</th>
+            <th>projectsx</th>
+          </tr>
+          <tr>
+            <td class="hours">7:30 - 19:45</td>
+            <td class="project">fdgfdg</td>
+          </tr>
+          <tr>
+            <td class="hours">7:30 - 19:45</td>
+            <td class="project">fdgfdg</td>
+          </tr>
+        </table> -->
       </section>
     </main>
-
-    <nav>
-      <ul>
-        <li><i class="fas fa-home"></i>Home</li>
-        <li><i class="fas fa-user-alt"></i>About</li>
-        <li><i class="fas fa-envelope"></i>Contact</li>
-      </ul>
-    </nav>
-
+    <script src="./plugin/jquery-3.6.0.min.js"></script>
     <script src="./index.js"></script>
   </body>
 </html>
