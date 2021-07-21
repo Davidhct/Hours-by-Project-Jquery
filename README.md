@@ -1,3 +1,3 @@
-# Hours-by-Project-Jquery
+# Hours-per-Project-Calculator-Jquery
 
 In progress..
