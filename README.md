@@ -1,3 +1,3 @@
-# Menu-by-Rotation
+# Hours-by-Project-Jquery
 
 In progress..
