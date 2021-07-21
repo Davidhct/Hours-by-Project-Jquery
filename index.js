@@ -63,11 +63,11 @@ function calculateHour(from, until, project) {
     newHour,
     newMinute;
 
-  if (
-    (!from.includes(".") && !from.split(":")) ||
-    (!until.includes(".") && !until.split(":"))
-  )
-    return;
+  // if (
+  //   (!from.includes(".") && !from.split(":")) ||
+  //   (!until.includes(".") && !until.split(":"))
+  // )
+  //   return;
   clockFrom = from.includes(".") ? from.split(".") : from.split(":");
   clockUntil = until.includes(".") ? until.split(".") : until.split(":");
 
