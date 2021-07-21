@@ -26,6 +26,11 @@ function inputListener() {
         from = $(`#from-${i}`).val();
         until = $(`#until-${i}`).val();
         project = $(`#project-name-${i}`).val();
+        if (from === "" || until === "" || project === "") {
+          alert("You muat enter hours and project name!");
+
+          break;
+        }
         calculateHour(from, until, project);
         if (i === 0) {
           globalVal.start = from;
@@ -33,14 +38,17 @@ function inputListener() {
       }
       filterTheProjects();
     } else {
-      globalVal.index = 1;
-      globalVal.start = "";
-      globalVal.clockStack = [];
-      globalVal.projectsStsck = [];
-      globalVal.finalResult = [];
-      $("#output").empty();
+      reset();
     }
   });
+}
+function reset() {
+  globalVal.index = 1;
+  globalVal.start = "";
+  globalVal.clockStack = [];
+  globalVal.projectsStsck = [];
+  globalVal.finalResult = [];
+  $("#output").empty();
 }
 
 function calculateHour(from, until, project) {
@@ -55,6 +63,11 @@ function calculateHour(from, until, project) {
     newHour,
     newMinute;
 
+  if (
+    (!from.includes(".") && !from.split(":")) ||
+    (!until.includes(".") && !until.split(":"))
+  )
+    return;
   clockFrom = from.includes(".") ? from.split(".") : from.split(":");
   clockUntil = until.includes(".") ? until.split(".") : until.split(":");
 
