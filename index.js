@@ -15,50 +15,60 @@ const globalVal = {
   projectsStsck: [],
   finalResult: [],
   start: "",
+  click: false,
 };
 
 const clockForm = (clock) => {
+  clock = typeof clock === "number" ? `${clock}` : clock;
   clock = clock.includes(".") ? clock.split(".") : clock.split(":");
   return [Number(clock[0]), Number(clock[1])];
 };
 const clockFormat = (hour, minute) => {
   minute = Number(minute);
-  return `${hour}:${minute < 9 ? "0" + minute : minute}`;
+  return `${hour}:${minute <= 9 ? "0" + minute : minute}`;
 };
+function addInputListener() {
+  $("#add-btn").click(function (e) {
+    e.preventDefault();
+    let tmp = globalVal.index;
+    globalVal.index = tmp + 1;
+    renderInput();
+  });
+}
 
 function inputListener() {
   $("#calc-btn").click((e) => {
-    if (globalVal.start === "") {
-      let from, until, project;
-      e.preventDefault();
-      for (let i = 0; i < globalVal.index; i++) {
-        from = $(`#from-${i}`).val();
-        until = $(`#until-${i}`).val();
-        project = $(`#project-name-${i}`).val();
-        if (from === "" || until === "" || project === "") {
-          alert("You muat enter hours and project name!");
-
-          break;
-        }
-        setInput(from, until, project);
-        if (i === 0) {
-          const hour = clockForm(from);
-          globalVal.start = clockFormat(hour[0], hour[1]);
-        }
-      }
-      filterTheProjects();
-    } else {
-      reset();
-    }
+    e.preventDefault();
+    reset();
+    globalVal.click = !globalVal.click;
+    getInput();
   });
 }
 function reset() {
-  globalVal.index = 1;
+  // globalVal.index = 1;
   globalVal.start = "";
   globalVal.clockStack = [];
   globalVal.projectsStsck = [];
   globalVal.finalResult = [];
-  $("#output").empty();
+  $(".render-output").remove();
+}
+function getInput() {
+  let from, until, project;
+  for (let i = 0; i < globalVal.index; i++) {
+    from = $(`#from-${i}`).val();
+    until = $(`#until-${i}`).val();
+    project = $(`#project-name-${i}`).val();
+    if (from === "" || until === "" || project === "") {
+      $(`#input-${i}`).remove();
+      continue;
+    }
+    setInput(from, until, project);
+    if (i === 0) {
+      const hour = clockForm(from);
+      globalVal.start = clockFormat(hour[0], hour[1]);
+    }
+  }
+  filterTheProjects();
 }
 
 function setInput(from, until, project) {
@@ -86,15 +96,6 @@ function setInput(from, until, project) {
   });
 
   console.log(globalVal.clockStack);
-}
-
-function addInputListener() {
-  $("#add-btn").click(function (e) {
-    e.preventDefault();
-    let tmp = globalVal.index;
-    globalVal.index = tmp + 1;
-    renderInput();
-  });
 }
 
 function filterTheProjects() {
@@ -177,6 +178,7 @@ function renderInput() {
 
 function renderTable() {
   const html = `
+          <section class="render-output">
             <h1>Summary of hours</h1>
             <table>
               <tr>
@@ -184,6 +186,7 @@ function renderTable() {
                 <th>projects</th>
               </tr>
             </table>
+          </section>  
             `;
   $("#output").append(html);
 }

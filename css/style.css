@@ -69,7 +69,9 @@ p > span {
   border-bottom: 2px solid rgb(9, 12, 190);
   margin: 1rem;
 }
-#output > h1 {
+
+#output,
+.render-output > h1 {
   margin-bottom: 1rem;
 }
 
