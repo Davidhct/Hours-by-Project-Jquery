@@ -17,6 +17,15 @@ const globalVal = {
   start: "",
 };
 
+const clockForm = (clock) => {
+  clock = clock.includes(".") ? clock.split(".") : clock.split(":");
+  return [Number(clock[0]), Number(clock[1])];
+};
+const clockFormat = (hour, minute) => {
+  minute = Number(minute);
+  return `${hour}:${minute < 9 ? "0" + minute : minute}`;
+};
+
 function inputListener() {
   $("#calc-btn").click((e) => {
     if (globalVal.start === "") {
@@ -31,9 +40,10 @@ function inputListener() {
 
           break;
         }
-        calculateHour(from, until, project);
+        setInput(from, until, project);
         if (i === 0) {
-          globalVal.start = from;
+          const hour = clockForm(from);
+          globalVal.start = clockFormat(hour[0], hour[1]);
         }
       }
       filterTheProjects();
@@ -51,37 +61,20 @@ function reset() {
   $("#output").empty();
 }
 
-function calculateHour(from, until, project) {
+function setInput(from, until, project) {
   checkProjects(project);
 
-  let clockFrom,
-    clockUntil,
-    hourFrom,
-    minuteFrom,
-    hourUntil,
-    minuteUntil,
-    newHour,
-    newMinute;
+  let hourFrom, minuteFrom, hourUntil, minuteUntil, newHour, newMinute;
 
-  // if (
-  //   (!from.includes(".") && !from.split(":")) ||
-  //   (!until.includes(".") && !until.split(":"))
-  // )
-  //   return;
-  clockFrom = from.includes(".") ? from.split(".") : from.split(":");
-  clockUntil = until.includes(".") ? until.split(".") : until.split(":");
-
-  hourFrom = Number(clockFrom[0]);
-  minuteFrom = Number(clockFrom[1]);
-  hourUntil = Number(clockUntil[0]);
-  minuteUntil = Number(clockUntil[1]);
+  [hourFrom, minuteFrom] = clockForm(from);
+  [hourUntil, minuteUntil] = clockForm(until);
 
   if (minuteFrom > minuteUntil) {
     newHour = hourUntil - hourFrom;
     newHour = newHour - 1;
     newMinute = minuteFrom - minuteUntil;
     newMinute = 60 - newMinute;
-  } else if (minuteFrom < minuteUntil) {
+  } else if (minuteFrom <= minuteUntil) {
     newHour = hourUntil - hourFrom;
     newMinute = minuteUntil - minuteFrom;
   }
@@ -100,19 +93,7 @@ function addInputListener() {
     e.preventDefault();
     let tmp = globalVal.index;
     globalVal.index = tmp + 1;
-    const html = `<article class="input">
-                    <input type="text" placeholder="From" id="from-${
-                      globalVal.index - 1
-                    }" />
-                    <input type="text" placeholder="Until" id="until-${
-                      globalVal.index - 1
-                    }" />
-                    <input type="text" placeholder="Project name" id="project-name-${
-                      globalVal.index - 1
-                    }" />
-                  </article>`;
-
-    $("#more-input").append(html);
+    renderInput();
   });
 }
 
@@ -137,61 +118,64 @@ function filterTheProjects() {
   console.log(globalVal.finalResult);
   filterTheHours();
 }
+/////////////
+function calculateHours(hour, minute) {
+  let newMinute = 0;
 
-function filterTheHours() {
-  let tmp1, tmp2;
-  globalVal.finalResult.forEach((item) => {
-    if (item.minutes >= 60) {
-      tmp1 = item.minutes / 60;
-      item.hours = item.hours + Math.floor(tmp1);
-      if (Math.floor(tmp1) > 1) {
-        tmp2 = Math.floor(tmp1) * 60;
-        item.minutes = Math.abs(item.minutes - tmp2);
-      } else {
-        tmp = item.minutes - 60;
-        item.minutes = tmp;
-      }
+  if (minute >= 60) {
+    newMinute = minute / 60;
+    hour = hour + Math.floor(newMinute);
+    if (Math.floor(newMinute) > 1) {
+      tmp2 = Math.floor(newMinute) * 60;
+      minute = Math.abs(minute - tmp2);
+    } else {
+      minute = minute - 60;
     }
-    tmp1 = 0;
-    tmp2 = 0;
+  }
+
+  return [hour, minute];
+}
+/////////
+function filterTheHours() {
+  let currHour, currMinute;
+  globalVal.finalResult.forEach((item) => {
+    [item.hours, item.minutes] = calculateHours(item.hours, item.minutes);
   });
   console.log(globalVal.finalResult);
   console.log(globalVal.projectsStsck);
-  renderTableOutput();
-  let curr, currHour, currMinute;
-  globalVal.finalResult.forEach((item, i) => {
-    curr = globalVal.start.includes(".")
-      ? globalVal.start.split(".")
-      : globalVal.start.split(":");
-    currHour = Number(curr[0]);
-    currMinute = Number(curr[1]);
+
+  renderTable();
+
+  globalVal.finalResult.forEach((item) => {
+    [currHour, currMinute] = clockForm(globalVal.start);
+
     currHour += item.hours;
     currMinute += item.minutes;
-    if (currMinute >= 60) {
-      tmp1 = currMinute / 60;
 
-      currHour = currHour + Math.floor(tmp1);
-      if (Math.floor(tmp1) > 1) {
-        tmp2 = Math.floor(tmp1) * 60;
-        currMinute = Math.abs(currMinute - tmp2);
-      } else {
-        currMinute = currMinute - 60;
-      }
-    }
+    [currHour, currMinute] = calculateHours(currHour, currMinute);
+    renderOutput(currHour, currMinute, item.projectName);
 
-    $("table").append(`<tr>
-            <td class="hours">${globalVal.start} - ${currHour}:${
-      currMinute < 9 ? "0" + currMinute : currMinute
-    }</td>
-            <td class="project">${item.projectName}</td>
-          </tr>`);
-    globalVal.start = `${currHour}:${
-      currMinute < 9 ? "0" + currMinute : currMinute
-    }`;
+    globalVal.start = clockFormat(currHour, currMinute);
   });
 }
 
-function renderTableOutput() {
+function renderInput() {
+  const html = `<article class="input" id="input-${globalVal.index - 1}">
+                    <input type="text" placeholder="From" id="from-${
+                      globalVal.index - 1
+                    }" />
+                    <input type="text" placeholder="Until" id="until-${
+                      globalVal.index - 1
+                    }" />
+                    <input type="text" placeholder="Project name" id="project-name-${
+                      globalVal.index - 1
+                    }" />
+                  </article>`;
+
+  $("#more-input").append(html);
+}
+
+function renderTable() {
   const html = `
             <h1>Summary of hours</h1>
             <table>
@@ -202,6 +186,16 @@ function renderTableOutput() {
             </table>
             `;
   $("#output").append(html);
+}
+
+function renderOutput(currHour, currMinute, projectName) {
+  const tr = `<tr>
+                  <td class="hours">${globalVal.start} - ${currHour}:${
+    currMinute < 9 ? "0" + currMinute : currMinute
+  }</td>
+                  <td class="project">${projectName}</td>
+          </tr>`;
+  $("table").append(tr);
 }
 
 function checkProjects(project) {
