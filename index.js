@@ -1,6 +1,7 @@
 $(document).ready(function () {
   inputListener();
   addInputListener();
+  resetListener();
 });
 $(document).keypress((e) => {
   if (e.which === 13) {
@@ -44,8 +45,20 @@ function inputListener() {
     getInput();
   });
 }
+
+function resetListener() {
+  $("#reset-btn").click(function (e) {
+    e.preventDefault();
+    globalVal.index = 1;
+    reset();
+    $("#more-input").empty();
+    $("#from-0").val("");
+    $("#until-0").val("");
+    $("#project-name-0").val("");
+  });
+}
+
 function reset() {
-  // globalVal.index = 1;
   globalVal.start = "";
   globalVal.clockStack = [];
   globalVal.projectsStsck = [];
