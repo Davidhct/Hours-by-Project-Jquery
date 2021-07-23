@@ -43,7 +43,8 @@ p > span {
 }
 
 #add-row > button,
-#calc > button {
+#calc > button,
+#reset-btn {
   cursor: pointer;
   padding: 0.1rem 1.3rem 0.1rem 1.3rem;
   font-size: 20px;
@@ -63,11 +64,6 @@ p > span {
 
 #add-btn {
   background: rgb(220, 20, 60);
-}
-
-#reset-btn {
-  background: rgb(20, 147, 237);
-  margin-right: 1rem;
 }
 
 #top-section {

@@ -49,12 +49,18 @@ function inputListener() {
 function resetListener() {
   $("#reset-btn").click(function (e) {
     e.preventDefault();
-    globalVal.index = 1;
-    reset();
-    $("#more-input").empty();
-    $("#from-0").val("");
-    $("#until-0").val("");
-    $("#project-name-0").val("");
+    swal("Are you sure you want to delete?", {
+      buttons: ["Cancel", "Yes!"],
+    }).then((res) => {
+      if (res) {
+        globalVal.index = 1;
+        reset();
+        $("#more-input").empty();
+        $("#from-0").val("");
+        $("#until-0").val("");
+        $("#project-name-0").val("");
+      }
+    });
   });
 }
 
