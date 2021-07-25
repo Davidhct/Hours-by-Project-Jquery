@@ -32,6 +32,8 @@ p > span {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  background: none;
+  border: none;
 }
 
 .input > input {

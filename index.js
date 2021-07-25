@@ -72,13 +72,25 @@ function reset() {
   $(".render-output").remove();
 }
 function getInput() {
-  let from, until, project;
+  let from, until, project, fromV, untilV, inputHourV;
   for (let i = 0; i < globalVal.index; i++) {
     from = $(`#from-${i}`).val();
     until = $(`#until-${i}`).val();
     project = $(`#project-name-${i}`).val();
+
+    fromV = validateExpression(`#from-${i}`);
+    untilV = validateExpression(`#until-${i}`);
+
+    inputHourV = validateHourInput(`#from-${i}`, `#until-${i}`);
+
+    if (!fromV || !untilV || inputHourV) break;
+
     if (from === "" || until === "" || project === "") {
-      $(`#input-${i}`).remove();
+      if (i === 0) {
+        $(`#input-${i}`).css("backgroundColor", "rgb(255, 187, 170)");
+      } else {
+        $(`#input-${i}`).remove();
+      }
       continue;
     }
     setInput(from, until, project);
@@ -87,7 +99,34 @@ function getInput() {
       globalVal.start = clockFormat(hour[0], hour[1]);
     }
   }
-  filterTheProjects();
+  if (fromV && untilV && !inputHourV) filterTheProjects();
+}
+
+function validateExpression(id) {
+  let expr = $(id).val();
+
+  let isValid = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]?$/.test(expr);
+
+  if (!isValid) {
+    $(id).css("backgroundColor", "rgb(255, 187, 170)");
+  } else {
+    $(id).css("backgroundColor", "rgb(255,255, 255)");
+  }
+
+  return isValid;
+}
+
+function validateHourInput(fromId, untilId) {
+  let from = $(fromId).val();
+  let until = $(untilId).val();
+  let hourFrom = clockForm(from);
+  let hourUntil = clockForm(until);
+  let isValid = hourUntil[0] < hourFrom[0];
+  console.log(hourUntil[0], " < ", hourFrom[0], " ", isValid);
+  if (isValid) {
+    $(untilId).css("backgroundColor", "rgb(255, 187, 170)");
+  }
+  return isValid;
 }
 
 function setInput(from, until, project) {
