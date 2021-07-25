@@ -13,7 +13,7 @@ $(document).keypress((e) => {
 const globalVal = {
   index: 1,
   clockStack: [],
-  projectsStsck: [],
+  projectStack: [],
   finalResult: [],
   start: "",
   click: false,
@@ -67,12 +67,12 @@ function resetListener() {
 function reset() {
   globalVal.start = "";
   globalVal.clockStack = [];
-  globalVal.projectsStsck = [];
+  globalVal.projectStack = [];
   globalVal.finalResult = [];
   $(".render-output").remove();
 }
 function getInput() {
-  let from, until, project, fromV, untilV, inputHourV;
+  let from, until, project, fromV, untilV, inputHourRow, inputHourDiagonal;
   for (let i = 0; i < globalVal.index; i++) {
     from = $(`#from-${i}`).val();
     until = $(`#until-${i}`).val();
@@ -81,9 +81,11 @@ function getInput() {
     fromV = validateExpression(`#from-${i}`);
     untilV = validateExpression(`#until-${i}`);
 
-    inputHourV = validateHourInput(`#from-${i}`, `#until-${i}`);
-
-    if (!fromV || !untilV || inputHourV) break;
+    inputHourRow = validateHourInput(1, `#from-${i}`, `#until-${i}`);
+    if (i + 1 < globalVal.index)
+      inputHourDiagonal = validateHourInput(0, `#from-${i + 1}`, `#until-${i}`);
+    else inputHourDiagonal = false;
+    if (!fromV || !untilV || inputHourRow || inputHourDiagonal) break;
 
     if (from === "" || until === "" || project === "") {
       if (i === 0) {
@@ -99,11 +101,16 @@ function getInput() {
       globalVal.start = clockFormat(hour[0], hour[1]);
     }
   }
-  if (fromV && untilV && !inputHourV) filterTheProjects();
+
+  if (fromV && untilV && !inputHourRow && !inputHourDiagonal)
+    filterTheProjects();
 }
 
 function validateExpression(id) {
+  let hourFrom, minuteFrom;
   let expr = $(id).val();
+  [hourFrom, minuteFrom] = clockForm(expr);
+  expr = clockFormat(hourFrom, minuteFrom);
 
   let isValid =
     /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]?$/.test(expr) ||
@@ -118,15 +125,18 @@ function validateExpression(id) {
   return isValid;
 }
 
-function validateHourInput(fromId, untilId) {
+function validateHourInput(flag, fromId, untilId) {
   let from = $(fromId).val();
   let until = $(untilId).val();
   let hourFrom = clockForm(from);
   let hourUntil = clockForm(until);
-  let isValid = hourUntil[0] < hourFrom[0];
-  console.log(hourUntil[0], " < ", hourFrom[0], " ", isValid);
+
+  let isValid =
+    flag === 1 ? hourUntil[0] < hourFrom[0] : hourFrom[0] < hourUntil[0];
+  let id = flag === 1 ? untilId : fromId;
+
   if (isValid) {
-    $(untilId).css("backgroundColor", "rgb(255, 187, 170)");
+    $(id).css("backgroundColor", "rgb(255, 187, 170)");
   }
   return isValid;
 }
@@ -154,16 +164,14 @@ function setInput(from, until, project) {
     minutes: newMinute,
     projectName: project,
   });
-
-  console.log(globalVal.clockStack);
 }
 
 function filterTheProjects() {
   let sumHours = 0;
   let sumMinutes = 0;
-  for (let i = 0; i < globalVal.projectsStsck.length; i++) {
+  for (let i = 0; i < globalVal.projectStack.length; i++) {
     globalVal.clockStack.forEach((item) => {
-      if (item.projectName === globalVal.projectsStsck[i]) {
+      if (item.projectName === globalVal.projectStack[i]) {
         sumHours += item.hours;
         sumMinutes += item.minutes;
       }
@@ -171,12 +179,12 @@ function filterTheProjects() {
     globalVal.finalResult.push({
       hours: sumHours,
       minutes: sumMinutes,
-      projectName: globalVal.projectsStsck[i],
+      projectName: globalVal.projectStack[i],
     });
     sumHours = 0;
     sumMinutes = 0;
   }
-  console.log(globalVal.finalResult);
+
   filterTheHours();
 }
 /////////////
@@ -202,8 +210,6 @@ function filterTheHours() {
   globalVal.finalResult.forEach((item) => {
     [item.hours, item.minutes] = calculateHours(item.hours, item.minutes);
   });
-  console.log(globalVal.finalResult);
-  console.log(globalVal.projectsStsck);
 
   renderTable();
 
@@ -214,6 +220,7 @@ function filterTheHours() {
     currMinute += item.minutes;
 
     [currHour, currMinute] = calculateHours(currHour, currMinute);
+
     renderOutput(currHour, currMinute, item.projectName);
 
     globalVal.start = clockFormat(currHour, currMinute);
@@ -246,6 +253,7 @@ function renderTable() {
                 <th>projects</th>
               </tr>
             </table>
+            <h2></h2>
           </section>  
             `;
   $("#output").append(html);
@@ -254,7 +262,7 @@ function renderTable() {
 function renderOutput(currHour, currMinute, projectName) {
   const tr = `<tr>
                   <td class="hours">${globalVal.start} - ${currHour}:${
-    currMinute < 9 ? "0" + currMinute : currMinute
+    currMinute <= 9 ? "0" + currMinute : currMinute
   }</td>
                   <td class="project">${projectName}</td>
           </tr>`;
@@ -263,16 +271,16 @@ function renderOutput(currHour, currMinute, projectName) {
 
 function checkProjects(project) {
   let count = 0;
-  if (globalVal.projectsStsck.length === 0) {
-    globalVal.projectsStsck.push(project);
+  if (globalVal.projectStack.length === 0) {
+    globalVal.projectStack.push(project);
   } else {
-    globalVal.projectsStsck.forEach((pro) => {
+    globalVal.projectStack.forEach((pro) => {
       if (pro === project) {
         count++;
       }
     });
     if (count === 0) {
-      globalVal.projectsStsck.push(project);
+      globalVal.projectStack.push(project);
     }
   }
 }
