@@ -105,7 +105,9 @@ function getInput() {
 function validateExpression(id) {
   let expr = $(id).val();
 
-  let isValid = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]?$/.test(expr);
+  let isValid =
+    /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]?$/.test(expr) ||
+    /^([0-9]|0[0-9]|1[0-9]|2[0-3]).[0-5][0-9]?$/.test(expr);
 
   if (!isValid) {
     $(id).css("backgroundColor", "rgb(255, 187, 170)");
